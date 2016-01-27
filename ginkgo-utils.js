@@ -1,4 +1,13 @@
 
+/*
+ * Dependency: ginkgo-es5.js
+**/
+
+/** 
+ * bug to fix: Flickering CSS Background Images in IE6
+ * conditions: when IE’s cache settings are “Every visit to the page” (a common developer’s setting) 
+ */
+// (/*@cc_on @_jscript_version === 5.6 || @*/false) is more efficient but has problem while compressing. 
 if ('\v' === 'v' && typeof ScriptEngineMinorVersion === 'function' && ScriptEngineMinorVersion() === 6) {
     try {
         document.execCommand("BackgroundImageCache", false, true);
@@ -80,7 +89,17 @@ if (window.Ginkgo === undefined) {
             return false;
         },
 
-        
+        /**
+         * Delete duplicate items from an array. Can also trim string items, delete empty string items
+         * @arr    target array (will be changed, the origenal order will be reserved)
+         * @fn     an option function will execute for each array item. like function (val) {return val + 'tails';}.
+         * @return a array contains the duplicate item
+         * Example: var arr = [1,2,3,2,1,window,'a','c',window,'a'];
+         *          var arr2 = [1,1,8,8,9,7,0];
+         *          var fn = function (v) {return 'pre_' + v;};
+         *          arrUnique(arr); //return [1,2,window,'a'], arr is [1,2,3,window,'a','c'];
+         *          arrUnique(arr2, fn); //return [1,8], arr2 is ['pre_1','pre_8','pre_9','pre_7','pre_0'];
+         */
         arrUnique: function (arr, fn) {
             var i, j, k, m, len, len2, arrSort = arr.slice(0),
                 arrDup = [],
@@ -150,13 +169,13 @@ if (window.Ginkgo === undefined) {
         isControlKey : function (k) {
             return (k > 8 && k < 46) || (k > 90 && k < 96) || (k > 111 && k < 186);  
         },
-       
+        /* Only Convert HTML Reserved Characters to Entities */
         toHtmlEntities : function (str) {
             return str.replace(/[<>&"']/g, function (s) {
                 return '&#x' + s.charCodeAt(0).toString(16) + ';';
             });
         },
-       
+        /* only call the "fn" function only once even if invoke it multiple times */
         once: function (fn, argus) {
             if (Object.prototype.toString.call(fn) === "[object Function]") {
                 if (typeof fn.iInvoke === 'undefined') {
@@ -167,7 +186,7 @@ if (window.Ginkgo === undefined) {
             }
         },
         genId: function (prefix) {
-            var f = arguments.callee;    
+            var f = arguments.callee;    //TODO. arguments.callee deprecated by ES5
             prefix = prefix || 'guid_';
             if (typeof f.i === 'undefined') {
                 f.i = 0;
@@ -249,7 +268,9 @@ if (window.Ginkgo === undefined) {
             return window.name;	
         },
 
-      
+        /**
+         * constant methods
+         */
         define: function (name, value) {
             return constSingleton.setter(name, value);    //true | false
         },
@@ -288,7 +309,10 @@ if (window.Ginkgo === undefined) {
             return parseInt(strHex, 16);
         },
 
-        
+        /**
+         * factory pattern
+         * an object with event handler
+         */
         gObj: function () {
             //private
             var _setter = function (obj, name, value) {

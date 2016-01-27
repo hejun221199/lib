@@ -5,7 +5,7 @@
 "use strict";
 
 /**
- * Function - ES5 15.3
+ * Function - ES5 15.5
  *
  * ES5 15.3.4.5 Function.prototype.bind (thisArg [, arg1 [, arg2, ...]])
  */
